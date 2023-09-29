@@ -96,6 +96,7 @@ const SequenceTrack = (HGC, ...args) => {
     }
 
     initTile(tile) {
+      if (!tile) return;
       this.unFlatten(tile);
       this.createColorAndLetterData(tile);
 
@@ -510,6 +511,7 @@ const SequenceTrack = (HGC, ...args) => {
      * @param tile
      */
     drawColoredRectangles(tileX, tileWidth, tile) {
+      if (!tile) return;
       const trackHeight = this.dimensions[1];
 
       const width = 1;

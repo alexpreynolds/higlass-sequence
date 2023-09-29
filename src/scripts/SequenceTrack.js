@@ -121,6 +121,8 @@ const SequenceTrack = (HGC, ...args) => {
     rerender(newOptions, updateOptions = true) {
       const visibleAndFetched = this.visibleAndFetchedTiles();
 
+      if (!visibleAndFetched) return;
+
       if (updateOptions) {
         this.updateOptions(newOptions);
         this.refreshTiles();
@@ -512,6 +514,8 @@ const SequenceTrack = (HGC, ...args) => {
 
       const width = 1;
       const matrix = tile.colorAndLetterData;
+
+      if (!matrix) return;
 
       for (let j = 0; j < matrix.length; j++) {
         // jth vertical bar in the graph

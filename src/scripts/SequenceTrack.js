@@ -25,13 +25,18 @@ const SequenceTrack = (HGC, ...args) => {
       super(context, options);
 
       this.dataFetchingMode = context.dataConfig.type;
+      this.pixiTexts = [];
 
       this.updateOptions(this.options);
     }
 
     setPixiTexts() {
-      this.pixiTexts = [];
+
+      if (Object.keys(this.pixiTexts).length > 0) {
+        return
+      }
       const letters = ['A', 'T', 'G', 'C', 'N', ' '];
+      this.pixiTexts = [];
       this.letterWidths = [];
       this.letterHeights = [];
       this.maxLetterWidth = 0;
@@ -76,6 +81,9 @@ const SequenceTrack = (HGC, ...args) => {
         fontWeight: 'bold',
       };
 
+      if ("notificationText" in this) {
+        this.notificationText.destroy()
+      }
       this.notificationText = new HGC.libraries.PIXI.Text(
         newOptions.notificationText,
         {
@@ -96,7 +104,6 @@ const SequenceTrack = (HGC, ...args) => {
     }
 
     initTile(tile) {
-      if (!tile) return;
       this.unFlatten(tile);
       this.createColorAndLetterData(tile);
 
@@ -122,8 +129,6 @@ const SequenceTrack = (HGC, ...args) => {
     rerender(newOptions, updateOptions = true) {
       const visibleAndFetched = this.visibleAndFetchedTiles();
 
-      if (!visibleAndFetched) return;
-
       if (updateOptions) {
         this.updateOptions(newOptions);
         this.refreshTiles();
@@ -148,7 +153,6 @@ const SequenceTrack = (HGC, ...args) => {
       // tile.textGraphics.destroy(true);
       // tile.borderGraphics.destroy(true);
       // tile.texts = [];
-
       this.rerender(this.options, false);
     }
 
@@ -511,13 +515,10 @@ const SequenceTrack = (HGC, ...args) => {
      * @param tile
      */
     drawColoredRectangles(tileX, tileWidth, tile) {
-      if (!tile) return;
       const trackHeight = this.dimensions[1];
 
       const width = 1;
       const matrix = tile.colorAndLetterData;
-
-      if (!matrix) return;
 
       for (let j = 0; j < matrix.length; j++) {
         // jth vertical bar in the graph
@@ -525,7 +526,7 @@ const SequenceTrack = (HGC, ...args) => {
         const nucleotide = matrix[j];
 
         this.addSVGInfoRect(tile, x, 0, width, trackHeight, nucleotide.color);
-        
+
         tile.tempGraphics.beginFill(this.colorHexMap[nucleotide.color]);
         tile.tempGraphics.drawRect(x, 0, width, trackHeight);
       }
@@ -536,7 +537,7 @@ const SequenceTrack = (HGC, ...args) => {
         tile.tempGraphics,
         HGC.libraries.PIXI.SCALE_MODES.NEAREST,
       );
-      
+
       const sprite = new HGC.libraries.PIXI.Sprite(texture);
       sprite.width = this._xScale(tileX + tileWidth) - this._xScale(tileX);
       sprite.height = trackHeight;
@@ -692,8 +693,8 @@ const SequenceTrack = (HGC, ...args) => {
     setDimensions(newDimensions) {
       super.setDimensions(newDimensions);
 
-      const visibleAndFetched = this.visibleAndFetchedTiles();
-      visibleAndFetched.map((a) => this.initTile(a));
+      // const visibleAndFetched = this.visibleAndFetchedTiles();
+      // visibleAndFetched.map((a) => this.initTile(a));
     }
 
     exportSVG() {

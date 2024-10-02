@@ -129,6 +129,8 @@ const SequenceTrack = (HGC, ...args) => {
     rerender(newOptions, updateOptions = true) {
       const visibleAndFetched = this.visibleAndFetchedTiles();
 
+      if (!visibleAndFetched) return;
+
       if (updateOptions) {
         this.updateOptions(newOptions);
         this.refreshTiles();

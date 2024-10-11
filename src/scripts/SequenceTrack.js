@@ -135,6 +135,7 @@ const SequenceTrack = (HGC, ...args) => {
         this.updateOptions(newOptions);
         this.refreshTiles();
         // if color scale has changed we need to reinitialize colors
+        if (!visibleAndFetched) return;
         for (let i = 0; i < visibleAndFetched.length; i++) {
           this.createColorAndLetterData(visibleAndFetched[i]);
         }

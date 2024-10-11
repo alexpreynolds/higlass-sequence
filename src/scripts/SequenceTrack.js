@@ -129,19 +129,22 @@ const SequenceTrack = (HGC, ...args) => {
     rerender(newOptions, updateOptions = true) {
       const visibleAndFetched = this.visibleAndFetchedTiles();
 
-      if (!visibleAndFetched) return;
+      if (visibleAndFetched == null) return;
 
       if (updateOptions) {
         this.updateOptions(newOptions);
         this.refreshTiles();
         // if color scale has changed we need to reinitialize colors
-        if (!visibleAndFetched) return;
+        if (visibleAndFetched == null) return;
         for (let i = 0; i < visibleAndFetched.length; i++) {
           this.createColorAndLetterData(visibleAndFetched[i]);
         }
       }
 
+      if (visibleAndFetched == null) return;
+
       for (let i = 0; i < visibleAndFetched.length; i++) {
+        if (visibleAndFetched == null) return;
         this.renderTile(visibleAndFetched[i]);
       }
     }
@@ -232,6 +235,7 @@ const SequenceTrack = (HGC, ...args) => {
         this.tilesetInfo.tile_size,
       );
 
+      if (tile == null) return;
       this.drawColoredRectangles(tileX, tileWidth, tile);
       this.drawTextSequence(tileX, tileWidth, tile);
     }
@@ -536,12 +540,16 @@ const SequenceTrack = (HGC, ...args) => {
 
       // vertical bars are drawn onto the graphics object
       // and a texture is generated from that
+      if (pixiRenderer == null || tile == null || tile.tempGraphics == null) return;
       const texture = pixiRenderer.generateTexture(
         tile.tempGraphics,
         HGC.libraries.PIXI.SCALE_MODES.NEAREST,
       );
+      if (texture == null) return;
 
       const sprite = new HGC.libraries.PIXI.Sprite(texture);
+      if (sprite == null) return;
+
       sprite.width = this._xScale(tileX + tileWidth) - this._xScale(tileX);
       sprite.height = trackHeight;
       sprite.x = this._xScale(tileX + 1);

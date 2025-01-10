@@ -1,15 +1,9 @@
 import { scaleLinear, scaleOrdinal } from 'd3-scale';
-import {schemeCategory10} from 'd3-scale-chromatic';
+import { schemeCategory10 } from 'd3-scale-chromatic';
 import { color } from 'd3-color';
-import FaiDataFetcher from './FaiDataFetcher';
+import FaiDataFetcher, { convertBasesToMultivec } from './FaiDataFetcher';
 
 const SequenceTrack = (HGC, ...args) => {
-  if (!new.target) {
-    throw new Error(
-      'Uncaught TypeError: Class constructor cannot be invoked without "new"',
-    );
-  }
-
   // Services
   const { tileProxy, pixiRenderer } = HGC.services;
 
@@ -96,6 +90,11 @@ const SequenceTrack = (HGC, ...args) => {
     }
 
     initTile(tile) {
+      if (tile.tileData.sequence) {
+        // This is a sequence tile from a fasta_seq filetype server dataset
+        tile.tileData.dense = convertBasesToMultivec(tile.tileData.sequence);
+      }
+
       this.unFlatten(tile);
       this.createColorAndLetterData(tile);
 
@@ -249,7 +248,8 @@ const SequenceTrack = (HGC, ...args) => {
       }
 
       tile.matrix =
-        this.dataFetchingMode === 'fasta'
+        this.dataFetchingMode === 'fasta' ||
+        this.tilesetInfo.datatype === 'sequence'
           ? (tile.matrix = tile.tileData.dense)
           : this.simpleUnFlatten(tile, tile.tileData.dense);
     }
@@ -261,6 +261,10 @@ const SequenceTrack = (HGC, ...args) => {
      * @returns {Array} 2D array representation of data
      */
     simpleUnFlatten(tile, data) {
+      if (!tile.tileData.shape) {
+        this.setError('Tile data missing shape');
+        return [];
+      }
       const shapeX = tile.tileData.shape[0]; // number of different nucleotides in each bar
       const shapeY = tile.tileData.shape[1]; // number of bars
 
@@ -519,7 +523,7 @@ const SequenceTrack = (HGC, ...args) => {
         const nucleotide = matrix[j];
 
         this.addSVGInfoRect(tile, x, 0, width, trackHeight, nucleotide.color);
-        
+
         tile.tempGraphics.beginFill(this.colorHexMap[nucleotide.color]);
         tile.tempGraphics.drawRect(x, 0, width, trackHeight);
       }
@@ -530,7 +534,7 @@ const SequenceTrack = (HGC, ...args) => {
         tile.tempGraphics,
         HGC.libraries.PIXI.SCALE_MODES.NEAREST,
       );
-      
+
       const sprite = new HGC.libraries.PIXI.Sprite(texture);
       sprite.width = this._xScale(tileX + tileWidth) - this._xScale(tileX);
       sprite.height = trackHeight;
@@ -584,7 +588,8 @@ const SequenceTrack = (HGC, ...args) => {
       // For FASTA files we fix the resolution, therefore we also fix the zoomLevel
       // in the visible tiles
       const tiles =
-        this.dataFetchingMode === 'fasta'
+        this.dataFetchingMode === 'fasta' ||
+        this.tilesetInfo.datatype === 'sequence'
           ? xTiles.map((x) => [this.maxZoom, x])
           : xTiles.map((x) => [this.zoomLevel, x]);
 
@@ -827,7 +832,7 @@ const icon =
 // default
 SequenceTrack.config = {
   type: 'horizontal-sequence',
-  datatype: ['multivec'],
+  datatype: ['multivec', 'sequence'],
   local: false,
   orientation: '1d-horizontal',
   thumbnail: new DOMParser().parseFromString(icon, 'text/xml').documentElement,

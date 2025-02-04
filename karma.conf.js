@@ -1,7 +1,7 @@
 var webpackConfig = require('./webpack.config.js');
 require('babel-polyfill');
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     basePath: '',
     frameworks: ['jasmine', 'server-side'],
@@ -10,7 +10,7 @@ module.exports = function(config) {
       'node_modules/babel-polyfill/dist/polyfill.js',
       'node_modules/react/umd/react.development.js',
       'node_modules/react-dom/umd/react-dom.development.js',
-      'node_modules/pixi.js/dist/pixi.js',
+      'node_modules/pixi.js/dist/browser/pixi.js',
       'node_modules/react-bootstrap/dist/react-bootstrap.js',
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
       'test/SVGExportTests.js',
@@ -35,9 +35,8 @@ module.exports = function(config) {
       'karma-jasmine',
       'karma-sourcemap-loader',
       'karma-chrome-launcher',
-      'karma-phantomjs-launcher',
       'karma-server-side',
-      'karma-verbose-reporter'
+      'karma-verbose-reporter',
     ],
 
     babelPreprocessor: {

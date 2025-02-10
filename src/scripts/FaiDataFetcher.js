@@ -1,5 +1,5 @@
 import slugid from 'slugid';
-import { RemoteFile } from 'generic-filehandle';
+import { RemoteFile } from '@apr144/generic-filehandle';
 import { tsvParseRows } from 'd3-dsv';
 
 class FaiDataFetcher {

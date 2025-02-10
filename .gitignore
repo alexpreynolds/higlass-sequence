@@ -9,4 +9,5 @@ es
 *.DS_cache
 .idea/
 *.DS_Store
-dist
+dist/
+dist.zip

@@ -1,5 +1,5 @@
 {
-  "name": "higlass-sequence",
+  "name": "@apr144/higlass-sequence",
   "version": "0.4.2",
   "description": "Sequence tracks for HiGlass",
   "private": false,
@@ -74,6 +74,6 @@
     "slugid": "^3.0.0",
     "higlass-register": "^0.3.0",
     "@gmod/indexedfasta": "^2.0.0",
-    "generic-filehandle": "^3.0.0"
+    "@apr144/generic-filehandle": "3.1.1-020925-001"
   }
 }
